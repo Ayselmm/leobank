@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leo Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0f172a;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 16px 40px}
+
+/* Top page nav */
+.page-nav{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:20px;max-width:500px}
+.page-nav button{padding:6px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.6);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
+.page-nav button:hover{background:rgba(255,255,255,0.12);color:#fff}
+.page-nav button.active{background:#2563eb;color:#fff;border-color:#2563eb}
+
+/* Phone shell */
+.phone{width:360px;height:720px;background:#f0f4f8;border-radius:40px;border:10px solid #1a1a2e;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
+.topbar{background:#1a3a6b;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-logo{color:#fff;font-size:18px;font-weight:800;letter-spacing:1px}
+.topbar-logo span{color:#60a5fa}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden}
+.screen::-webkit-scrollbar{width:3px}
+.screen::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:3px}
+.bottom-nav{background:#1a3a6b;display:flex;justify-content:space-around;padding:10px 0 14px;flex-shrink:0}
+.bnav{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 6px;border-radius:8px;color:rgba(255,255,255,0.4);font-size:9px;font-weight:500;transition:color .2s;border:none;background:none;font-family:inherit}
+.bnav:hover,.bnav.active{color:#fff}
+.bnav svg{width:20px;height:20px}
+
+/* Pages */
+.page{display:none;padding:16px}
+.page.active{display:block}
+
+/* Auth pages */
+.auth-page{display:none;height:100%;background:linear-gradient(160deg,#0f2347 0%,#1a3a6b 50%,#2563eb 100%);padding:20px;align-items:center;justify-content:center}
+.auth-page.active{display:flex}
+.auth-card{background:#fff;border-radius:20px;padding:28px 22px;width:100%}
+.auth-logo{text-align:center;margin-bottom:22px}
+.auth-logo h1{font-size:26px;font-weight:800;color:#1a3a6b}
+.auth-logo h1 span{color:#2563eb}
+.auth-logo p{color:#64748b;font-size:12px;margin-top:3px}
+
+/* Form */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:10px;font-weight:700;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.form-group input,.form-group select{width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;font-family:inherit;color:#1e293b;background:#f8fafc;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:#2563eb;background:#fff}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+
+/* Buttons */
+.btn-primary{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s}
+.btn-primary:hover{background:#1d4ed8}
+.btn-primary.danger{background:#dc2626}
+.btn-primary.danger:hover{background:#b91c1c}
+.btn-secondary{width:100%;padding:11px;background:transparent;color:#2563eb;border:1.5px solid #2563eb;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px}
+.link-btn{background:none;border:none;color:#2563eb;font-size:12px;cursor:pointer;width:100%;text-align:center;margin-top:10px;font-family:inherit}
+
+/* Balance hero */
+.balance-hero{background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);border-radius:16px;padding:20px;color:#fff;margin-bottom:16px}
+.balance-hero .lbl{font-size:11px;opacity:.7;margin-bottom:5px}
+.balance-hero .amt{font-size:32px;font-weight:800}
+.balance-hero .amt span{font-size:16px;font-weight:500;margin-right:3px}
+
+/* Cards */
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.card-body{padding:14px}
+.card-title{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+
+/* Section title */
+.section-title{font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:11px}
+.data-table th{text-align:left;padding:7px 10px;background:#f8fafc;color:#64748b;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.data-table td{padding:9px 10px;border-bottom:1px solid #f1f5f9;color:#1e293b}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#fafafa}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-purple{background:#ede9fe;color:#6d28d9}
+.badge-gray{background:#f1f5f9;color:#475569}
+
+/* Alert */
+.alert{padding:10px 12px;border-radius:10px;font-size:12px;font-weight:500;margin-bottom:12px}
+.alert-success{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.alert-error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+
+/* Bank card visual */
+.bank-card-visual{border-radius:14px;padding:18px;color:#fff;margin-bottom:10px;position:relative;background:linear-gradient(135deg,#1e3a5f,#2563eb)}
+.bank-card-visual.credit{background:linear-gradient(135deg,#3b1a6b,#7c3aed)}
+.bank-card-visual .card-number{font-size:14px;letter-spacing:2px;margin:10px 0 8px}
+.bank-card-visual .card-meta{display:flex;gap:16px;font-size:10px;opacity:.75}
+.bank-card-visual .type-badge{position:absolute;top:12px;right:14px;font-size:9px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 8px;border-radius:20px;text-transform:uppercase}
+.bank-card-visual .bank-name{font-size:10px;opacity:.6}
+
+/* Profile */
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#2563eb);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;margin:0 auto 8px}
+.profile-field{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.profile-field:last-child{border-bottom:none}
+.pf-label{font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.pf-value{font-size:12px;font-weight:500;color:#1e293b}
+
+/* Divider */
+.divider{height:1px;background:#e2e8f0;margin:12px 0}
+
+/* Tabs */
+.tab-row{display:flex;gap:6px;margin-bottom:12px}
+.tab-btn{flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#f8fafc;color:#64748b;font-family:inherit;transition:all .15s}
+.tab-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+
+/* Empty */
+.empty-state{text-align:center;padding:28px;color:#94a3b8;font-size:12px}
+
+/* Doc item */
+.doc-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px}
+.doc-item .doc-name{font-weight:600;font-size:12px;color:#1e293b;margin-bottom:3px}
+.doc-item .doc-sub{font-size:11px;color:#64748b}
+.doc-item .doc-date{font-size:10px;color:#94a3b8;margin-top:3px}
+.del-btn{background:#fee2e2;border:none;color:#dc2626;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:12px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- Page switcher (top) -->
+<div class="page-nav">
+  <button class="active" onclick="showPage('login')">Giriş</button>
+  <button onclick="showPage('home')">Ana səhifə</button>
+  <button onclick="showPage('payment')">Ödəniş</button>
+  <button onclick="showPage('topup')">Köçürmə</button>
+  <button onclick="showPage('products')">Məhsullar</button>
+  <button onclick="showPage('documents')">Sənədlər</button>
+  <button onclick="showPage('profile')">Profil</button>
+  <button onclick="showPage('reset')">Şifrə yenilə</button>
+</div>
+
+<!-- Phone shell -->
+<div class="phone">
+
+  <!-- Top bar -->
+  <div class="topbar" id="topbar">
+    <span class="topbar-logo">Leo<span>Bank</span></span>
+    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.6)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+  </div>
+
+  <!-- Screen -->
+  <div class="screen" id="screen">
+
+    <!-- ═══ LOGIN ═══ -->
+    <div class="auth-page active" id="page-login">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <h1>Leo<span>Bank</span></h1>
+          <p>Hesabınıza daxil olun</p>
+        </div>
+        <div id="login-err" class="alert alert-error" style="display:none">İstifadəçi adı və ya şifrə yanlışdır</div>
+        <div class="form-group">
+          <label>İstifadəçi adı</label>
+          <input id="login-user" placeholder="username" value="demo" autocomplete="username"/>
+        </div>
+        <div class="form-group">
+          <label>Şifrə</label>
+          <input id="login-pass" type="password" placeholder="••••••••" value="demo123" autocomplete="current-password"/>
+        </div>
+        <button class="btn-primary" onclick="doLogin()">Daxil ol</button>
+        <button class="link-btn" onclick="showPage('reset')">Şifrəni unutmuşam</button>
+      </div>
+    </div>
+
+    <!-- ═══ RESET PASSWORD ═══ -->
+    <div class="auth-page" id="page-reset">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <h1>Leo<span>Bank</span></h1>
+          <p>Şifrəni yenilə</p>
+        </div>
+        <div id="reset-ok" class="alert alert-success" style="display:none">Şifrə uğurla yeniləndi!</div>
+        <div class="form-group">
+          <label>İstifadəçi adı</label>
+          <input placeholder="username"/>
+        </div>
+        <div class="form-group">
+          <label>Yeni şifrə</label>
+          <input type="password" placeholder="••••••••"/>
+        </div>
+        <div class="form-group">
+          <label>Şifrəni təsdiqlə</label>
+          <input type="password" placeholder="••••••••"/>
+        </div>
+        <button class="btn-primary" onclick="flashOk('reset-ok','Şifrə uğurla yeniləndi! Yönləndirilirsiniz...',()=>showPage('login'))">Yenilə</button>
+        <button class="link-btn" onclick="showPage('login')">← Geri qayıt</button>
+      </div>
+    </div>
+
+    <!-- ═══ HOME ═══ -->
+    <div class="page" id="page-home">
+      <p style="font-size:11px;color:#64748b;margin-bottom:4px">Xoş gəldiniz 👋</p>
+      <h2 style="font-size:18px;font-weight:700;color:#1e293b;margin-bottom:14px">Aysel Memmedova</h2>
+
+      <div class="balance-hero">
+        <div class="lbl">Cari Balans</div>
+        <div class="amt"><span>₼</span>2,450.75</div>
+      </div>
+
+      <div class="section-title">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Son əməliyyatlar
+      </div>
+
+      <div class="card">
+        <table class="data-table">
+          <thead>
+            <tr><th>Ad</th><th>Məbləğ</th><th>Tip</th><th>Tarix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td style="font-weight:500">Azərenerji</td><td style="color:#dc2626;font-weight:700">−₼45.00</td><td><span class="badge badge-blue">utility</span></td><td style="color:#94a3b8">2026-06-25</td></tr>
+            <tr><td style="font-weight:500">Bakcell</td><td style="color:#dc2626;font-weight:700">−₼12.50</td><td><span class="badge badge-green">mobile</span></td><td style="color:#94a3b8">2026-06-24</td></tr>
+            <tr><td style="font-weight:500">Bank köçürməsi</td><td style="color:#dc2626;font-weight:700">−₼200.00</td><td><span class="badge badge-purple">transfer</span></td><td style="color:#94a3b8">2026-06-23</td></tr>
+            <tr><td style="font-weight:500">Azərsu</td><td style="color:#dc2626;font-weight:700">−₼18.00</td><td><span class="badge badge-blue">utility</span></td><td style="color:#94a3b8">2026-06-21</td></tr>
+            <tr><td style="font-weight:500">Nar Mobile</td><td style="color:#dc2626;font-weight:700">−₼10.00</td><td><span class="badge badge-green">mobile</span></td><td style="color:#94a3b8">2026-06-20</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PAYMENT ═══ -->
+    <div class="page" id="page-payment">
+      <div class="section-title">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Ödəniş et
+      </div>
+
+      <div id="pay-ok" class="alert alert-success" style="display:none">✓ Ödəniş uğurla icra edildi!</div>
+
+      <div class="card card-body">
+        <div class="form-group">
+          <label>Ödəniş növü</label>
+          <select>
+            <option>💡 Kommunal (İşıq, Qaz, Su)</option>
+            <option>📱 Mobil operator</option>
+            <option>🌐 İnternet</option>
+            <option>🏦 Bank köçürməsi</option>
+            <option>🛒 Alış-veriş</option>
+            <option>📦 Digər</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ödəniş adı / Alıcı</label>
+          <input id="pay-name" placeholder="məs. Azərenerji, Bakcell..."/>
+        </div>
+        <div class="form-group">
+          <label>Məbləğ (₼)</label>
+          <input id="pay-amt" type="number" placeholder="0.00" min="0.01" step="0.01"/>
+        </div>
+        <button class="btn-primary" onclick="doPayment()">Ödə</button>
+      </div>
+
+      <p style="font-size:11px;color:#94a3b8;text-align:center">Ödəniş balansınızdan çıxılacaq</p>
+    </div>
+
+    <!-- ═══ TOP-UP / TRANSFER ═══ -->
+    <div class="page" id="page-topup">
+      <div class="section-title">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        Pul köçürmə
+      </div>
+
+      <div id="topup-ok" class="alert alert-success" style="display:none">✓ Köçürmə uğurla icra edildi!</div>
+
+      <div class="card card-body">
+        <div class="form-group">
+          <label>Göndərici kart</label>
+          <select>
+            <option>4169 7388 1234 5678 (debet)</option>
+            <option>5168 7500 9876 5432 (kredit)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Alıcı kart nömrəsi</label>
+          <input placeholder="xxxx xxxx xxxx xxxx"/>
+        </div>
+        <div class="form-group">
+          <label>Məbləğ (₼)</label>
+          <input type="number" placeholder="0.00" min="0.01" step="0.01"/>
+        </div>
+        <button class="btn-primary" onclick="flashOk('topup-ok','✓ Köçürmə uğurla icra edildi!')">Köçür</button>
+      </div>
+
+      <div class="section-title" style="margin-top:4px">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Köçürmə tarixçəsi
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Haradan</th><th>Hara</th><th>Məbləğ</th><th>Tarix</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-size:10px">4169...5678</td>
+              <td style="font-size:10px">5168...5432</td>
+              <td style="color:#dc2626;font-weight:700">−₼150.00</td>
+              <td style="color:#94a3b8;font-size:10px">2026-06-20</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PRODUCTS ═══ -->
+    <div class="page" id="page-products">
+      <div class="section-title">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        Məhsullarım
+      </div>
+
+      <div class="tab-row">
+        <button class="tab-btn active" id="pt-debit" onclick="switchPTab('debit')">💳 Debet kartlar</button>
+        <button class="tab-btn" id="pt-credit" onclick="switchPTab('credit')">🟣 Kredit kartlar</button>
+      </div>
+
+      <!-- Debet tab -->
+      <div id="ptab-debit">
+        <div class="bank-card-visual">
+          <div class="type-badge">Debet</div>
+          <div class="bank-name">LEO BANK</div>
+          <div class="card-number">4169 7388 1234 5678</div>
+          <div class="card-meta">
+            <span>Son tarix: 12/27</span>
+            <span>CVV: ***</span>
+          </div>
+        </div>
+
+        <div id="debet-ok" class="alert alert-success" style="display:none">✓ Kart əlavə edildi!</div>
+        <div class="card card-body">
+          <div class="card-title">+ Yeni debet kart əlavə et</div>
+          <div class="form-group">
+            <label>Kart nömrəsi</label>
+            <input placeholder="xxxx xxxx xxxx xxxx"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Son tarix</label>
+              <input placeholder="MM/YY"/>
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input placeholder="***" maxlength="4"/>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="flashOk('debet-ok','✓ Kart əlavə edildi!')">Əlavə et</button>
+        </div>
+      </div>
+
+      <!-- Credit tab -->
+      <div id="ptab-credit" style="display:none">
+        <div class="bank-card-visual credit">
+          <div class="type-badge">Kredit</div>
+          <div class="bank-name">LEO BANK</div>
+          <div class="card-number">5168 7500 9876 5432</div>
+          <div class="card-meta">
+            <span>Son tarix: 08/26</span>
+            <span>Auto Kredit</span>
+          </div>
+        </div>
+
+        <div id="credit-ok" class="alert alert-success" style="display:none">✓ Kredit kart əlavə edildi!</div>
+        <div class="card card-body">
+          <div class="card-title">+ Yeni kredit kart əlavə et</div>
+          <div class="form-group">
+            <label>Kart nömrəsi</label>
+            <input placeholder="xxxx xxxx xxxx xxxx"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Son tarix</label>
+              <input placeholder="MM/YY"/>
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input placeholder="***" maxlength="4"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Müqavilə adı</label>
+            <input placeholder="məs. Auto Kredit"/>
+          </div>
+          <button class="btn-primary" onclick="flashOk('credit-ok','✓ Kredit kart əlavə edildi!')">Əlavə et</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ DOCUMENTS ═══ -->
+    <div class="page" id="page-documents">
+      <div class="section-title">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Sənədlər
+      </div>
+
+      <div id="doc-ok" class="alert alert-success" style="display:none">✓ Sənəd uğurla yaradıldı!</div>
+
+      <div class="card card-body">
+        <div class="card-title">Yeni sənəd yarat</div>
+        <div class="form-group">
+          <label>Sənəd adı</label>
+          <input placeholder="məs. Hesab çıxarışı"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="email@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Hesab adı</label>
+          <input placeholder="Ad Soyad"/>
+        </div>
+        <div class="form-group">
+          <label>Kart nömrəsi (ixtiyari)</label>
+          <select>
+            <option value="">Seçin...</option>
+            <option>4169 7388 1234 5678</option>
+            <option>5168 7500 9876 5432</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="flashOk('doc-ok','✓ Sənəd uğurla yaradıldı!')">Yarat</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-title">Sənəd siyahısı</div>
+
+      <div class="card">
+        <div class="doc-item">
+          <div>
+            <div class="doc-name">📄 Hesab çıxarışı</div>
+            <div class="doc-sub">Aysel Memmedova · aysel@leobank.az</div>
+            <div class="doc-sub" style="margin-top:1px">4169 7388 1234 5678</div>
+            <div class="doc-date">2026-06-01</div>
+          </div>
+          <button class="del-btn">🗑</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PROFILE ═══ -->
+    <div class="page" id="page-profile">
+      <div class="section-title">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1e293b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Profil
+      </div>
+
+      <div id="prof-ok" class="alert alert-success" style="display:none">✓ Profil yeniləndi!</div>
+
+      <div class="card card-body">
+        <div class="avatar">AM</div>
+        <p style="text-align:center;font-size:16px;font-weight:700;color:#1e293b">Aysel Memmedova</p>
+        <p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:14px">@demo</p>
+
+        <div class="divider"></div>
+
+        <div id="prof-view">
+          <div class="profile-field"><span class="pf-label">Ad</span><span class="pf-value">Aysel</span></div>
+          <div class="profile-field"><span class="pf-label">Soyad</span><span class="pf-value">Memmedova</span></div>
+          <div class="profile-field"><span class="pf-label">Telefon</span><span class="pf-value">+994501234567</span></div>
+          <div class="profile-field"><span class="pf-label">Email</span><span class="pf-value" style="font-size:11px">aysel@leobank.az</span></div>
+          <div class="profile-field"><span class="pf-label">Doğum tarixi</span><span class="pf-value">1995-06-15</span></div>
+          <div class="profile-field"><span class="pf-label">Şifrə</span><span class="pf-value">••••••••</span></div>
+          <div style="margin-top:14px">
+            <button class="btn-secondary" onclick="toggleEdit(true)">✏️ Redaktə et</button>
+          </div>
+        </div>
+
+        <div id="prof-edit" style="display:none">
+          <div class="form-group"><label>Ad</label><input value="Aysel"/></div>
+          <div class="form-group"><label>Soyad</label><input value="Memmedova"/></div>
+          <div class="form-group"><label>Telefon</label><input value="+994501234567"/></div>
+          <div class="form-group"><label>Email</label><input type="email" value="aysel@leobank.az"/></div>
+          <div class="form-group"><label>Doğum tarixi</label><input type="date" value="1995-06-15"/></div>
+          <button class="btn-primary" onclick="flashOk('prof-ok','✓ Profil yeniləndi!',()=>toggleEdit(false))">Saxla</button>
+          <button class="btn-secondary" onclick="toggleEdit(false)">Ləğv et</button>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <button class="btn-primary danger" onclick="showPage('login')">🚪 Çıxış</button>
+      </div>
+    </div>
+
+  </div><!-- /screen -->
+
+  <!-- Bottom nav -->
+  <div class="bottom-nav" id="bottomnav">
+    <button class="bnav active" id="bn-home" onclick="showPage('home')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Ana
+    </button>
+    <button class="bnav" id="bn-payment" onclick="showPage('payment')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Ödəniş
+    </button>
+    <button class="bnav" id="bn-topup" onclick="showPage('topup')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+      Köçür
+    </button>
+    <button class="bnav" id="bn-products" onclick="showPage('products')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      Məhsul
+    </button>
+    <button class="bnav" id="bn-documents" onclick="showPage('documents')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Sənəd
+    </button>
+    <button class="bnav" id="bn-profile" onclick="showPage('profile')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      Profil
+    </button>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+const AUTH_PAGES = ['login','reset'];
+const NAV_PAGES  = ['home','payment','topup','products','documents','profile'];
+
+function showPage(p) {
+  // hide all
+  document.querySelectorAll('.page, .auth-page').forEach(el => el.classList.remove('active'));
+  const pg = document.getElementById('page-' + p);
+  if (pg) pg.classList.add('active');
+
+  const isAuth = AUTH_PAGES.includes(p);
+  document.getElementById('topbar').style.display   = isAuth ? 'none' : 'flex';
+  document.getElementById('bottomnav').style.display = isAuth ? 'none' : 'flex';
+
+  // bottom nav active state
+  document.querySelectorAll('.bnav').forEach(el => el.classList.remove('active'));
+  const bn = document.getElementById('bn-' + p);
+  if (bn) bn.classList.add('active');
+
+  // top switcher active state
+  document.querySelectorAll('.page-nav button').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes("'" + p + "'"));
+  });
+}
+
+function flashOk(id, msg, callback) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => {
+    el.style.display = 'none';
+    if (callback) callback();
+  }, 2000);
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-err');
+  if (u === 'demo' && p === 'demo123') {
+    err.style.display = 'none';
+    showPage('home');
+  } else {
+    err.style.display = 'block';
+  }
+}
+
+function doPayment() {
+  const name = document.getElementById('pay-name').value.trim();
+  const amt  = document.getElementById('pay-amt').value;
+  if (!name || !amt) return;
+  flashOk('pay-ok', '✓ Ödəniş uğurla icra edildi!');
+  document.getElementById('pay-name').value = '';
+  document.getElementById('pay-amt').value  = '';
+}
+
+function switchPTab(t) {
+  document.getElementById('ptab-debit').style.display  = t === 'debit'  ? 'block' : 'none';
+  document.getElementById('ptab-credit').style.display = t === 'credit' ? 'block' : 'none';
+  document.getElementById('pt-debit').className  = 'tab-btn' + (t === 'debit'  ? ' active' : '');
+  document.getElementById('pt-credit').className = 'tab-btn' + (t === 'credit' ? ' active' : '');
+}
+
+function toggleEdit(show) {
+  document.getElementById('prof-view').style.display = show ? 'none' : 'block';
+  document.getElementById('prof-edit').style.display = show ? 'block' : 'none';
+}
+
+// Start on login
+showPage('login');
+</script>
+</body>
+</html>
